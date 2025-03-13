@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration</title>
+</head>
+<body>
+    <h2>Admin Registration</h2>
+
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="employee_number">Employee Number:</label>
+        <input type="text" name="employee_number" id="employee_number" required>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password1">Password:</label>
+        <input type="password" name="password1" id="password1" required>
+
+        <label for="password2">Confirm Password:</label>
+        <input type="password" name="password2" id="password2" required>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="{% url 'admin_login' %}">Login here</a></p>
+</body>
+</html>

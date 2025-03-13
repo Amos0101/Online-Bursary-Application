@@ -1,0 +1,143 @@
+{% extends "homepage.html" %}
+{% block content %}
+<div class="container">
+    <h1>MASINDE MULIRO UNIVERSITY OF SCIENCE AND TECHNOLOGY</h1>
+    <h2>STUDENT AFFAIRS DEPARTMENT</h2>
+    <h2>RATTANSI BURSARY APPLICATION FORM</h2>
+    <h2>2024/2025 ACADEMIC YEAR</h2>
+
+    <p class="instructions">
+        <strong>INSTRUCTIONS:</strong><br>
+        This form has 3 pages. Complete all the sections. This is an official document, and the information provided must be
+        true and correct to the best of your knowledge. Giving false, incorrect, or incomplete information will lead to the
+        automatic disqualification of the application and may further lead to disciplinary action or forfeiture of the bursary.
+        Duly completed application forms should be returned to the Office of the Dean of Students.
+    </p>
+
+    <h2>1. PERSONAL DETAILS OF THE APPLICANT</h2>
+
+    <form method="POST" id="personalDetailsForm" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_name">Name:</label>
+        {{ form.name }}
+
+        <label for="id_reg_no">Reg No:</label>
+        {{ form.reg_no }}
+
+        <label for="id_school">School:</label>
+        {{ form.school }}
+
+        <label for="id_gender">Gender:</label>
+        {{ form.gender }}
+
+        <label for="id_home_address">Home Address:</label>
+        {{ form.home_address }}
+
+        <label for="id_phone_number">Phone Number:</label>
+        {{ form.phone_number }}
+
+        <label for="id_county">Home County:</label>
+        <select id="id_county">
+            <option value="">Select County</option>
+            {% for county in counties %}
+            <option value="{{ county }}">{{ county }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="id_sub_county">Sub-County:</label>
+        <select id="id_sub_county">
+            <option value="">Select Subcounty</option>
+        </select>
+
+        <label for="id_next_of_kin">Name of Next of Kin:</label>
+        {{ form.next_of_kin }}
+
+        <label for="id_next_of_kin_address">Next of Kin Address:</label>
+        {{ form.next_of_kin_address }}
+
+        <label for="id_next_of_kin_phone">Next of Kin Phone:</label>
+        {{ form.next_of_kin_phone }}
+
+        <label for="id_chief_name">Name of Chief:</label>
+        {{ form.chief_name }}
+
+        <label for="id_chief_address">Chief Address:</label>
+        {{ form.chief_address }}
+
+        <label for="id_chief_phone">Chief Phone:</label>
+        {{ form.chief_phone }}
+
+       <div class="checkbox-container">
+
+    <label for="id_disability">Are you living with a disability?</label>
+           {{ form.disability }}
+</div>
+
+        <label for="id_disability_details">Specify:</label>
+        {{ form.disability_details }}
+
+        <label for="id_student_status">Student Status:</label>
+        {{ form.student_status }}
+
+        <label for="id_residential_status">Accommodation or Residential Status:</label>
+        {{ form.residential_status }}
+
+        <button type="submit" onclick="window.location.href='{% url 'family' %}'">Next</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    let disabilityCheckbox = document.getElementById("id_disability");
+    let specifyField = document.getElementById("id_disability_details");
+
+    function toggleSpecifyField() {
+        if (disabilityCheckbox.checked) {  // Check if the checkbox is checked
+            specifyField.disabled = false;
+            specifyField.required = true;
+        } else {
+            specifyField.disabled = true;
+            specifyField.required = false;
+            specifyField.value = "";  // Clear the field when disabled
+        }
+    }
+
+    // Run once when the page loads to set the initial state
+    toggleSpecifyField();
+
+    // Add event listener for change
+    disabilityCheckbox.addEventListener("change", toggleSpecifyField);
+});
+
+document.getElementById("id_county").addEventListener("change", function() {
+    let countyName = this.value;
+    let subcountyDropdown = document.getElementById("id_sub_county");
+
+    // Clear existing subcounty options
+    subcountyDropdown.innerHTML = '<option value="">Select Subcounty</option>';
+
+    if (countyName) {
+        fetch(`/get-subcounties/${countyName}/`)  // Fetch subcounties from Django view
+        .then(response => response.json())
+        .then(data => {
+            if (data.subcounties.length > 0) {
+                subcountyDropdown.disabled = false;
+                data.subcounties.forEach(subcounty => {
+                    let option = document.createElement("option");
+                    option.value = subcounty;
+                    option.textContent = subcounty;
+                    subcountyDropdown.appendChild(option);
+                });
+            } else {
+                subcountyDropdown.disabled = true;
+            }
+        })
+        .catch(error => console.error("Error fetching subcounties:", error));
+    } else {
+        subcountyDropdown.disabled = true;
+    }
+});
+</script>
+
+{% endblock %}
