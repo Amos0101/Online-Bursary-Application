@@ -1,22 +1,10 @@
-from .forms import FamilyBackgroundForm
+from django.contrib import messages
+from .forms import StudentApplicationForm
 from django.http import JsonResponse
-from .models import SubCounty, County
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import PersonalDetailsForm
-from .models import SubCounty
 
 
-# Define counties and their corresponding subcounties in a dictionary
-COUNTIES_SUBCOUNTIES = {
-    "Baringo": ["Baringo Central", "Baringo North", "Mogotio"],
-    "Kitui": ["Kitui Central", "Kitui West", "Mwingi West"],
-    "Nairobi": ["Westlands", "Lang'ata", "Kasarani", "Dagoretti", "Embakasi"],
-    "Kisumu": ["Kisumu East", "Kisumu Central", "Nyando", "Kisumu West", "Muhoroni"],
-    "Mombasa": ["Mvita", "Changamwe", "Kisauni", "Nyali"],
-    "Nakuru": ["Nakuru Town East", "Nakuru Town West", "Rongai"],
-    "Kiambu": ["Kiambu Town", "Thika Town", "Juja", "Ruiru"],
-}
 def student_dashboard(request):
     return render(request, 'dashboard.html')
 
@@ -24,38 +12,39 @@ def student_dashboard(request):
 def homepage(request):
     return render(request, 'homepage.html')
 
-def application(request):
+
+def student_application(request):
     if request.method == "POST":
-        form = PersonalDetailsForm(request.POST)
+        form = StudentApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('family')  # Redirect to next step
+            messages.success(request, "Application submitted successfully!")
+            return redirect("application_success")  # Redirect to success page
+        else:
+            messages.error(request, "There were errors in your form. Please check and submit again.")
     else:
-        form = PersonalDetailsForm()
+        form = StudentApplicationForm()
 
-    counties = list(COUNTIES_SUBCOUNTIES.keys())
-    print("Counties being passed:", counties)  # Debugging line
+    return render(request, "student_application.html", {"form": form})
 
-    return render(request, 'application.html', {'form': form, 'counties': counties})
+def confirm_application(request):
+    form_data = request.session.get('form_data', {})
+    file_data = request.session.get('file_data', {})
 
-
-def get_subcounties(request, county_name):
-    try:
-        county = County.objects.get(name=county_name)  # Get county by name
-        subcounties = SubCounty.objects.filter(county_id=county.id).values("id", "name")
-        return JsonResponse({"subcounties": list(subcounties)})
-    except County.DoesNotExist:
-        return JsonResponse({"subcounties": []})  # Return empty if county not found
-
-
-def family_background_view(request):
     if request.method == "POST":
-        form = FamilyBackgroundForm(request.POST, request.FILES)
+        form = StudentApplicationForm(form_data, file_data)
         if form.is_valid():
             form.save()
-            return redirect("")  # Redirect after successful submission
-    else:
-        form = FamilyBackgroundForm()
 
-    return render(request, "family_background.html", {"form": form})
+            # Clear session after saving
+            del request.session['form_data']
+            del request.session['file_data']
 
+            messages.success(request, "Application submitted successfully!")  # Flash success message
+            print("Redirecting to success page...")
+            return redirect('application_success')  # Redirect to success page
+
+        else:
+            messages.error(request, "An error occurred. Please try again.")
+
+    return render(request, 'confirm_application.html', {'form_data': form_data, 'file_data': file_data})

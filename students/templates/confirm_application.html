@@ -1,0 +1,36 @@
+{% extends "homepage.html" %}
+
+{% block content %}
+<h2>Confirm Your Application</h2>
+
+<p>Please review your application before submitting.</p>
+
+<!-- Display Form Data -->
+<ul>
+    {% for key, value in form_data.items %}
+        <li><strong>{{ key|title }}:</strong> {{ value }}</li>
+    {% endfor %}
+</ul>
+
+<!-- Display Uploaded Files -->
+{% if has_files %}
+    <h3>Uploaded Files</h3>
+    <ul>
+        {% for key, value in file_names.items %}
+            <li><strong>{{ key|title }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No files uploaded.</p>
+{% endif %}
+
+<!-- Confirmation Form -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <button type="submit">Confirm and Submit</button>
+</form>
+
+<!-- Go Back to Edit -->
+<a href="{% url 'student_application' %}">Go Back and Edit</a>
+
+{% endblock %}

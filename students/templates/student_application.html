@@ -1,0 +1,319 @@
+{% extends "homepage.html" %}
+{% block content %}
+<div class="container">
+    <h1>MASINDE MULIRO UNIVERSITY OF SCIENCE AND TECHNOLOGY</h1>
+    <h2>STUDENT AFFAIRS DEPARTMENT</h2>
+    <h2>RATTANSI BURSARY APPLICATION FORM</h2>
+    <h2>2024/2025 ACADEMIC YEAR</h2>
+
+    <p class="instructions">
+        <strong>INSTRUCTIONS:</strong><br>
+        This form has 3 pages. Complete all the sections. This is an official document, and the information provided must be
+        true and correct to the best of your knowledge. Giving false, incorrect, or incomplete information will lead to the
+        automatic disqualification of the application and may further lead to disciplinary action or forfeiture of the bursary.
+        Duly completed application forms should be returned to the Office of the Dean of Students.
+    </p>
+
+<!-- Display Django Messages -->
+{% if messages %}
+    <div id="flash-messages" class="messages">
+        {% for message in messages %}
+            <p class="message {% if message.tags %} {{ message.tags }} {% endif %}">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Display Form Errors -->
+{% if form.errors %}
+    <div id="error-box" class="error-box">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li><strong>{{ field|title }}</strong>: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+    <h2>1. PERSONAL DETAILS OF THE APPLICANT</h2>
+
+    <form method="POST" id="personalDetailsForm" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_name">Name:</label>
+        {{ form.name }}
+
+        <label for="id_reg_no">Reg No:</label>
+        {{ form.reg_no }}
+
+        <label for="id_school">School:</label>
+        {{ form.school }}
+
+        <label for="id_gender">Gender:</label>
+        {{ form.gender }}
+
+        <label for="id_home_address">Home Address:</label>
+        {{ form.home_address }}
+
+        <label for="id_phone_number">Phone Number:</label>
+        {{ form.phone_number }}
+
+        <label for="id_county">Home County:</label>
+        {{ form.county }}
+
+        <label for="id_next_of_kin">Name of Next of Kin:</label>
+        {{ form.next_of_kin }}
+
+        <label for="id_next_of_kin_address">Next of Kin Address:</label>
+        {{ form.next_of_kin_address }}
+
+        <label for="id_next_of_kin_phone">Next of Kin Phone:</label>
+        {{ form.next_of_kin_phone }}
+
+        <label for="id_chief_name">Name of Chief:</label>
+        {{ form.chief_name }}
+
+        <label for="id_chief_address">Chief Address:</label>
+        {{ form.chief_address }}
+
+        <label for="id_chief_phone">Chief Phone:</label>
+        {{ form.chief_phone }}
+
+       <div class="checkbox-container">
+
+    <label for="id_disability">Are you living with a disability?</label>
+           {{ form.disability }}
+        </div>
+
+        <label for="id_disability_details">Specify:</label>
+        {{ form.disability_details }}
+
+        <label for="id_student_status">Student Status:</label>
+        {{ form.student_status }}
+
+        <label for="id_residential_status">Accommodation or Residential Status:</label>
+        {{ form.residential_status }}
+
+
+
+        <h2>2. FAMILY BACKGROUND</h2>
+
+    <!-- Parental Status -->
+    <label>Parental Status (Tick as appropriate)</label>
+    {{ form.parental_status }}
+
+    <div id="death_certificate_field" style="display: none;">
+        <label>Attach Death Certificate (if deceased):</label>
+        {{ form.death_certificate }}
+    </div>
+
+    <!-- Father Details -->
+    <div id="father_fields">
+        <h3>Father</h3>
+        <label>Age:</label> {{ form.father_age }}
+        <label>Occupation:</label> {{ form.father_occupation }}
+        <label>Current Employer:</label> {{ form.father_employer }}
+        <label>Health Status (Attach evidence):</label> {{ form.father_health_status }}
+    </div>
+
+         <!-- Mother Details -->
+    <div id="mother_fields">
+        <h3>Mother</h3>
+        <label>Age:</label> {{ form.mother_age }}
+        <label>Occupation:</label> {{ form.mother_occupation }}
+        <label>Current Employer:</label> {{ form.mother_employer }}
+        <label>Health Status (Attach evidence):</label> {{ form.mother_health_status }}
+    </div>
+
+    <!-- Sibling Details -->
+    <h3>Siblings (Brothers and Sisters)</h3>
+    <label>Total number of siblings (Excluding yourself):</label> {{ form.total_siblings }}
+    <label>Number in University/College:</label> {{ form.university_siblings }}
+    <label>Number in Secondary:</label> {{ form.secondary_siblings }}
+    <label>How many are out of school?</label>
+    {{ form.out_of_school_siblings }}
+        <label>Why?</label>
+        {{ form.out_of_school_reason }}
+    <label>Any who are working and their occupations:</label> {{ form.working_siblings_occupation }}
+
+   <h3>OTHER INFORMATION</h3>
+
+    <label>Who paid your secondary school fees?</label>
+    {{ form.school_fee_payer }}
+    {{form.school_fee_evidence}}
+
+    <label>Are you / have you been on work study program?</label>
+    {{form.work_study}}
+    {{form.work_study_evidence}}
+
+    <label> Do you receive any financial support from external sponsors such as HELB, NGOs, CDF</label>
+    {{ form.external_support }}
+
+    <label>If Yes, select sponsor:</label>
+    {{ form.sponsor_source }}
+
+    <label>Amount received:</label>
+    {{ form.sponsor_amount }}
+
+    <label>Have you completed paying tuition fees?</label>
+    {{ form.tuition_fee_paid }}
+
+    <label>If No, state balance:</label>
+    {{ form.fee_balance }}
+
+    <label>Attach Current Fee Statement:</label>
+    {{ form.fee_statement }}
+
+    <label>Have you ever deferred your university studies?</label>
+    {{ form.deferred_study }}
+
+    <label>If Yes, give reason:</label>
+    {{ form.defer_reason }}
+
+    <label>Any additional information:</label>
+    {{ form.additional_info }}
+
+    <label>Attach evidence:</label>
+    {{ form.additional_info_evidence }}
+
+    <button type="submit">Submit Application</button>
+    <a href="{% url 'application_success' %}">Submit application</a>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    let disabilityCheckbox = document.getElementById("id_disability");
+    let specifyField = document.getElementById("id_disability_details");
+
+    function toggleSpecifyField() {
+        if (disabilityCheckbox.checked) {  // Check if the checkbox is checked
+            specifyField.disabled = false;
+            specifyField.required = true;
+        } else {
+            specifyField.disabled = true;
+            specifyField.required = false;
+            specifyField.value = "";  // Clear the field when disabled
+        }
+    }
+
+    // Run once when the page loads to set the initial state
+    toggleSpecifyField();
+
+    // Add event listener for change
+    disabilityCheckbox.addEventListener("change", toggleSpecifyField);
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const parentalStatus = document.querySelectorAll("input[name='parental_status']");
+    const deathCertificateField = document.getElementById("death_certificate_field");
+    const fatherFields = document.getElementById("father_fields");
+    const motherFields = document.getElementById("mother_fields");
+
+    function toggleFields() {
+        let selectedValue = document.querySelector("input[name='parental_status']:checked").value;
+        if (selectedValue === "orphan") {
+            deathCertificateField.style.display = "block";
+            fatherFields.style.display = "none";
+            motherFields.style.display = "none";
+        } else if (selectedValue === "one") {
+            deathCertificateField.style.display = "block";
+            fatherFields.style.display = "block";
+            motherFields.style.display = "block";
+        } else {
+            deathCertificateField.style.display = "none";
+            fatherFields.style.display = "block";
+            motherFields.style.display = "block";
+        }
+    }
+
+    parentalStatus.forEach(input => {
+        input.addEventListener("change", toggleFields);
+    });
+
+    toggleFields();
+});
+document.addEventListener("DOMContentLoaded", function () {
+    // Get field elements
+    const workStudyEvidence = document.getElementById("id_work_study_evidence");
+
+    const externalSupportField = document.getElementById("id_external_support");
+    const sponsorSourceField = document.getElementById("id_sponsor_source");
+    const sponsorAmountField = document.getElementById("id_sponsor_amount");
+
+    const tuitionFeeField = document.getElementById("id_tuition_fee_paid");
+    const feeBalanceField = document.getElementById("id_fee_balance");
+    const feeStatementField = document.getElementById("id_fee_statement");
+
+    const deferredStudyField = document.getElementById("id_deferred_study");
+    const deferReasonField = document.getElementById("id_defer_reason");
+
+    const schoolFeeEvidenceField = document.getElementById("id_school_fee_evidence"); // Always enabled
+
+    function getRadioValue(name) {
+        const checkedRadio = document.querySelector(`input[name="${name}"]:checked`);
+        return checkedRadio ? checkedRadio.value : null;
+    }
+
+    function toggleField(field, isEnabled) {
+        if (field) {
+            field.disabled = !isEnabled;
+            if (!isEnabled) {
+                field.value = "";  // Clear field when disabled
+            }
+        }
+    }
+
+    function updateFields() {
+        // Work-study program logic
+        const isWorkStudyYes = getRadioValue("work_study") === "yes";
+        toggleField(workStudyEvidence, isWorkStudyYes);
+
+        // External financial support logic
+        const isExternalSupportYes = getRadioValue("external_support") === "yes";
+        toggleField(sponsorSourceField, isExternalSupportYes);
+        toggleField(sponsorAmountField, isExternalSupportYes);
+
+        // Tuition fee completion logic
+        const isFeeNotPaid = getRadioValue("tuition_fee_paid") === "no";
+        toggleField(feeBalanceField, isFeeNotPaid);
+        toggleField(feeStatementField, isFeeNotPaid);
+
+        // Deferred study logic
+        const isDeferred = getRadioValue("deferred_study") === "yes";
+        toggleField(deferReasonField, isDeferred);
+
+        // School fee evidence should always be enabled
+        schoolFeeEvidenceField.disabled = false;
+    }
+
+    // Run when page loads (for pre-filled forms)
+    updateFields();
+
+    // Add event listeners for radio buttons
+    document.querySelectorAll('input[name="work_study"]').forEach(radio => radio.addEventListener("change", updateFields));
+    document.querySelectorAll('input[name="external_support"]').forEach(radio => radio.addEventListener("change", updateFields));
+    document.querySelectorAll('input[name="tuition_fee_paid"]').forEach(radio => radio.addEventListener("change", updateFields));
+    document.querySelectorAll('input[name="deferred_study"]').forEach(radio => radio.addEventListener("change", updateFields));
+});
+
+    //errors popup
+
+     // Wait for the page to load
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let flashMessages = document.getElementById("flash-messages");
+            let errorBox = document.getElementById("error-box");
+
+            if (flashMessages) {
+                flashMessages.style.display = "none";
+            }
+            if (errorBox) {
+                errorBox.style.display = "none";
+            }
+        }, 5000); // 5000ms = 5 seconds
+    });
+
+</script>
+
+{% endblock %}

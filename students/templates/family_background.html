@@ -40,7 +40,7 @@
     <label>How many are out of school? Why?</label>
     {{ form.out_of_school_siblings }} {{ form.out_of_school_reason }}
     <label>Any who are working and their occupations:</label> {{ form.working_siblings_occupation }}
-
+    <a href="{% url 'application' %}" class="btn">BACK</a>
     <button type="button" id="backBtn">Back</button>
     <button type="submit" onclick="window.location.href='{% url 'application' %}'">Next</button>
 </form>

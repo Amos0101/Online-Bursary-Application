@@ -1,0 +1,84 @@
+{% extends 'homepage.html' %}
+{% block content %}
+<h2>3. OTHER INFORMATION</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Secondary School Fee -->
+    <label for="id_secondary_school_fee_payer">Who paid your secondary school fee?</label>
+    {{ form.secondary_school_fee_payer }}
+    <label>Attach evidence:</label>
+    {{ form.secondary_school_fee_evidence }}
+
+    <!-- Work Study Program -->
+    <label for="id_work_study_program">Are you/have you been on a work-study program?</label>
+    {{ form.work_study_program }}
+    <label>Attach evidence:</label>
+    {{ form.work_study_evidence }}
+
+    <!-- External Support -->
+    <label for="id_external_support">Do you receive financial support from sponsors?</label>
+    {{ form.external_support }}
+
+    <div id="support-details" style="display: none;">
+        <label for="id_support_source">Specify Source:</label>
+        {{ form.support_source }}
+        <label for="id_support_amount">Amount:</label>
+        {{ form.support_amount }}
+    </div>
+
+    <!-- Tuition Fee -->
+    <label for="id_tuition_fee_completed">Have you completed paying tuition?</label>
+    {{ form.tuition_fee_completed }}
+
+    <div id="tuition-details" style="display: none;">
+        <label for="id_tuition_fee_balance">State Balance:</label>
+        {{ form.tuition_fee_balance }}
+        <label>Attach Current Fee Statement:</label>
+        {{ form.fee_statement }}
+    </div>
+
+    <!-- Deferred Studies -->
+    <label for="id_deferred_studies">Have you ever deferred university studies?</label>
+    {{ form.deferred_studies }}
+
+    <div id="deferred-details" style="display: none;">
+        <label for="id_deferred_reason">Reason:</label>
+        {{ form.deferred_reason }}
+    </div>
+
+    <!-- Additional Information -->
+    <label for="id_additional_info">Other relevant information:</label>
+    {{ form.additional_info }}
+    <label>Attach evidence:</label>
+    {{ form.additional_info_evidence }}
+
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function toggleField(radioName, fieldId) {
+            let radios = document.getElementsByName(radioName);
+            let field = document.getElementById(fieldId);
+
+            function checkVisibility() {
+                for (let radio of radios) {
+                    if (radio.checked && radio.value === "Yes") {
+                        field.style.display = "block";
+                    } else {
+                        field.style.display = "none";
+                    }
+                }
+            }
+
+            radios.forEach(radio => radio.addEventListener('change', checkVisibility));
+            checkVisibility();  // Run on page load
+        }
+
+        toggleField("external_support", "support-details");
+        toggleField("tuition_fee_completed", "tuition-details");
+        toggleField("deferred_studies", "deferred-details");
+    });
+</script>
+{% endblock %}

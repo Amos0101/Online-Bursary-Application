@@ -1,47 +1,15 @@
 from django import forms
-from .models import PersonalDetails, County, SubCounty
+from .models import StudentApplication
 
+class StudentApplicationForm(forms.ModelForm):
+    PARENTAL_STATUS_CHOICES = [
+        ("both", "Have both parents"),
+        ("one", "Have one parent"),
+        ("orphan", "Total orphan"),
+    ]
 
-
-class PersonalDetailsForm(forms.ModelForm):
-    county = forms.ModelChoiceField(queryset=County.objects.all(), empty_label="Select County")
-    sub_county = forms.ModelChoiceField(queryset=SubCounty.objects.none(), empty_label="Select Sub-County")
-
-    class Meta:
-        model = PersonalDetails
-        fields = '__all__'
-
-        widgets = {
-            "name": forms.TextInput(attrs={"placeholder": "Enter your full name"}),
-            "reg_no": forms.TextInput(attrs={"placeholder": "Enter your registration number"}),
-            "school": forms.TextInput(attrs={"placeholder": "Enter your school name"}),
-            "gender": forms.Select(attrs={"placeholder": "Select your gender"}),
-            "home_address": forms.TextInput(attrs={"placeholder": "Enter your home address"}),
-            "phone_number": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
-            "next_of_kin": forms.TextInput(attrs={"placeholder": "Enter next of kin's name"}),
-            "next_of_kin_address": forms.TextInput(attrs={"placeholder": "Enter next of kin's address"}),
-            "next_of_kin_phone": forms.TextInput(attrs={"placeholder": "Enter next of kin's phone"}),
-            "chief_name": forms.TextInput(attrs={"placeholder": "Enter chief's name"}),
-            "chief_address": forms.TextInput(attrs={"placeholder": "Enter chief's address"}),
-            "chief_phone": forms.TextInput(attrs={"placeholder": "Enter chief's phone"}),
-            "disability_details": forms.TextInput(attrs={"placeholder": "If yes, specify your disability"}),
-    }
-    def __init__(self, *args, **kwargs):
-        super(PersonalDetailsForm, self).__init__(*args, **kwargs)
-        if 'county' in self.data:
-            try:
-                county_id = int(self.data.get('county'))
-                self.fields['sub_county'].queryset = SubCounty.objects.filter(county_id=county_id)
-            except (ValueError, TypeError):
-                self.fields['sub_county'].queryset = SubCounty.objects.none()
-
-PARENTAL_STATUS_CHOICES = [
-    ("both", "Have both parents"),
-    ("one", "Have one parent"),
-    ("orphan", "Total orphan"),
-]
-
-class FamilyBackgroundForm(forms.Form):
+    # Existing Fields
+    county = forms.ChoiceField(choices=StudentApplication.COUNTY_CHOICES, required=True)
     parental_status = forms.ChoiceField(
         choices=PARENTAL_STATUS_CHOICES,
         widget=forms.RadioSelect,
@@ -65,3 +33,53 @@ class FamilyBackgroundForm(forms.Form):
     out_of_school_siblings = forms.IntegerField(widget=forms.NumberInput(attrs={"min": 0}), required=False)
     out_of_school_reason = forms.CharField(max_length=255, required=False)
     working_siblings_occupation = forms.CharField(max_length=255, required=False)
+
+
+    # Choices
+    YES_NO_CHOICES = [("yes", "Yes"), ("no", "No")]
+    SPONSOR_CHOICES = [("HELB", "HELB"), ("NGO", "NGO"), ("CDF", "CDF"), ("Other", "Other")]
+    DEFER_REASON_CHOICES = [("Medical", "Medical"), ("Social", "Social"), ("Financial", "Financial"),
+                            ("Academic", "Academic")]
+
+    # Step 3 Fields
+    school_fee_payer = forms.CharField(max_length=255, required=False)
+    school_fee_evidence = forms.FileField(required= False)
+
+    work_study = forms.ChoiceField(choices=YES_NO_CHOICES, widget= forms.RadioSelect)
+    work_study_evidence = forms.FileField(required=False)
+
+    external_support = forms.ChoiceField(choices=YES_NO_CHOICES, widget=forms.RadioSelect)
+    sponsor_source = forms.ChoiceField(choices=SPONSOR_CHOICES, required=False, widget=forms.Select)
+    sponsor_amount = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={"min": 0}))
+
+    tuition_fee_paid = forms.ChoiceField(choices=YES_NO_CHOICES, widget=forms.RadioSelect)
+    fee_balance = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={"min": 0}))
+    fee_statement = forms.FileField(required=False)
+
+    deferred_study = forms.ChoiceField(choices=YES_NO_CHOICES, widget=forms.RadioSelect)
+    defer_reason = forms.ChoiceField(choices=DEFER_REASON_CHOICES, required=False, widget=forms.Select)
+
+    additional_info = forms.CharField(
+        widget=forms.Textarea(attrs={"placeholder": "Enter any other relevant information"}), required=False)
+    additional_info_evidence = forms.FileField(required=False)
+
+
+    class Meta:
+        model = StudentApplication
+        fields = '__all__'
+
+        widgets = {
+            "name": forms.TextInput(attrs={"placeholder": "Enter your full name"}),
+            "reg_no": forms.TextInput(attrs={"placeholder": "Enter your registration number"}),
+            "school": forms.TextInput(attrs={"placeholder": "Enter your school name"}),
+            "gender": forms.Select(attrs={"placeholder": "Select your gender"}),
+            "home_address": forms.TextInput(attrs={"placeholder": "Enter your home address"}),
+            "phone_number": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
+            "next_of_kin": forms.TextInput(attrs={"placeholder": "Enter next of kin's name"}),
+            "next_of_kin_address": forms.TextInput(attrs={"placeholder": "Enter next of kin's address"}),
+            "next_of_kin_phone": forms.TextInput(attrs={"placeholder": "Enter next of kin's phone"}),
+            "chief_name": forms.TextInput(attrs={"placeholder": "Enter chief's name"}),
+            "chief_address": forms.TextInput(attrs={"placeholder": "Enter chief's address"}),
+            "chief_phone": forms.TextInput(attrs={"placeholder": "Enter chief's phone"}),
+            "disability_details": forms.TextInput(attrs={"placeholder": "If yes, specify your disability"}),
+        }
