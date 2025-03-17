@@ -8,6 +8,10 @@ urlpatterns = [
 
     path("student_application/", views.student_application, name="student_application"),
 
-    path("confirm_application/", views.confirm_application, name="confirm_application"),
     path("success/", lambda request: render(request, "application_success.html"), name="application_success"),
-]
+
+    path('notifications/', views.notifications, name='notifications'),
+    path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
+    path('notifications/delete/<int:notification_id>/', views.delete_notification, name='delete_notification'),
+
+    ]

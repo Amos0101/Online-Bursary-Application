@@ -23,6 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user.urls')),
     path('students/', include('students.urls')),
+    path('admins/', include('admins.urls')),
+
 ]
 
 if settings.DEBUG:  # Serve media files in development

@@ -61,7 +61,7 @@ def student_logout(request):
     return redirect('login')
 @login_required()
 def home(request):
-    return render(request, 'homepage.html')
+    return render(request, 'admin_homepage.html')
 
 
 def admin_register(request):
@@ -96,7 +96,7 @@ def admin_login(request):
         user = authenticate(request, username=employee_number, password=password)
         if user is not None:
             login(request, user)
-            return redirect("admin_home")
+            return redirect("admin_homepage")
         else:
             messages.error(request, "Invalid credentials.")
             return redirect("admin_login")

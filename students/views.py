@@ -2,7 +2,9 @@ from django.contrib import messages
 from .forms import StudentApplicationForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .models import Notification
 
 
 def student_dashboard(request):
@@ -17,7 +19,11 @@ def student_application(request):
     if request.method == "POST":
         form = StudentApplicationForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            application = form.save(commit=False)
+            application.student = request.user
+            application.status = "Pending"
+            application.save()
+
             messages.success(request, "Application submitted successfully!")
             return redirect("application_success")  # Redirect to success page
         else:
@@ -27,24 +33,23 @@ def student_application(request):
 
     return render(request, "student_application.html", {"form": form})
 
-def confirm_application(request):
-    form_data = request.session.get('form_data', {})
-    file_data = request.session.get('file_data', {})
 
-    if request.method == "POST":
-        form = StudentApplicationForm(form_data, file_data)
-        if form.is_valid():
-            form.save()
+def notifications(request):
+    """ Display all notifications for the logged-in student """
+    notifications = Notification.objects.filter(student=request.user).order_by('-created_at')
+    return render(request, 'notifications.html', {'notifications': notifications})
 
-            # Clear session after saving
-            del request.session['form_data']
-            del request.session['file_data']
 
-            messages.success(request, "Application submitted successfully!")  # Flash success message
-            print("Redirecting to success page...")
-            return redirect('application_success')  # Redirect to success page
+def mark_as_read(request, notification_id):
+    """ Mark a notification as read """
+    notification = get_object_or_404(Notification, id=notification_id, student=request.user)
+    notification.is_read = True
+    notification.save()
+    return redirect('notifications')
 
-        else:
-            messages.error(request, "An error occurred. Please try again.")
 
-    return render(request, 'confirm_application.html', {'form_data': form_data, 'file_data': file_data})
+def delete_notification(request, notification_id):
+    """ Delete a notification """
+    notification = get_object_or_404(Notification, id=notification_id, student=request.user)
+    notification.delete()
+    return redirect('notifications')

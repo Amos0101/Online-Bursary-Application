@@ -1,0 +1,17 @@
+{% extends 'homepage.html' %}
+{% block content %}
+<h2>Notifications</h2>
+<ul>
+    {% for notification in notifications %}
+        <li>
+            {{ notification.message }} - {{ notification.created_at|date:"Y-m-d H:i" }}
+            {% if not notification.is_read %}
+                <a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>
+            {% endif %}
+            <a href="{% url 'delete_notification' notification.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+        </li>
+    {% empty %}
+        <li>No notifications available.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

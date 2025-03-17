@@ -1,4 +1,8 @@
+from datetime import timezone
+
+from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class StudentApplication(models.Model):
@@ -13,6 +17,12 @@ class StudentApplication(models.Model):
         ('Nairobi', 'Nairobi'),
         ('Mombasa', 'Mombasa'),
         ('Kisumu', 'Kisumu'),
+    ]
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
     ]
 
     # Personal Details
@@ -40,6 +50,7 @@ class StudentApplication(models.Model):
         ("one", "Have one parent"),
         ("orphan", "Total orphan"),
     ])
+
     death_certificate = models.FileField(upload_to="documents/", null=True, blank=True)
 
     # Father's Details
@@ -71,7 +82,11 @@ class StudentApplication(models.Model):
 
     external_support = models.CharField(max_length=3, choices=[("yes", "Yes"), ("no", "No")])
     sponsor_source = models.CharField(
-        max_length=50, choices=[("HELB", "HELB"), ("NGO", "NGO"), ("CDF", "CDF"), ("Other", "Other")], null=True,
+        max_length=50, choices=[
+            ("HELB", "HELB"),
+            ("NGO", "NGO"),
+            ("CDF", "CDF"),
+            ("Other", "Other")], null=True,
         blank=True
     )
     sponsor_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -83,13 +98,32 @@ class StudentApplication(models.Model):
     deferred_study = models.CharField(max_length=3, choices=[("yes", "Yes"), ("no", "No")])
     defer_reason = models.CharField(
         max_length=50,
-        choices=[("Medical", "Medical"), ("Social", "Social"), ("Financial", "Financial"), ("Academic", "Academic")],
+        choices=[("Medical", "Medical"),
+                 ("Social", "Social"),
+                 ("Financial", "Financial"),
+                 ("Academic", "Academic")],
         null=True, blank=True
     )
 
     additional_info = models.TextField(null=True, blank=True)
     additional_info_evidence = models.FileField(upload_to="documents/", null=True, blank=True)
 
+    student = models.ForeignKey(User, on_delete=models.CASCADE)  # Reference to the student
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    submitted_at = models.DateTimeField(auto_now_add=True)  # Timestamp of submission
+    reviewed_at = models.DateTimeField(null=True, blank=True)  # Timestamp when reviewed
+    approved_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.name} ({self.reg_no})"
+
+
+class Notification(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE)  # Notification belongs to a student
+    message = models.TextField()  # Notification message
+    is_read = models.BooleanField(default=False)  # Track if the notification is read
+    created_at = models.DateTimeField(default=timezone.now)  # Time of creation
+
+    def __str__(self):
+        return f"Notification for {self.student.name} - {'Read' if self.is_read else 'Unread'}"

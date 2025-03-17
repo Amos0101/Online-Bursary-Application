@@ -8,10 +8,10 @@
 
     <p class="instructions">
         <strong>INSTRUCTIONS:</strong><br>
-        This form has 3 pages. Complete all the sections. This is an official document, and the information provided must be
+        This form has 3 sections. Complete all the sections. This is an official document, and the information provided must be
         true and correct to the best of your knowledge. Giving false, incorrect, or incomplete information will lead to the
         automatic disqualification of the application and may further lead to disciplinary action or forfeiture of the bursary.
-        Duly completed application forms should be returned to the Office of the Dean of Students.
+
     </p>
 
 <!-- Display Django Messages -->
@@ -40,58 +40,58 @@
     <form method="POST" id="personalDetailsForm" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label for="id_name">Name:</label>
+        <label for="id_name">a. Name:</label>
         {{ form.name }}
 
-        <label for="id_reg_no">Reg No:</label>
+        <label for="id_reg_no">b. Registration Number:</label>
         {{ form.reg_no }}
 
-        <label for="id_school">School:</label>
+        <label for="id_school">c. School:</label>
         {{ form.school }}
 
-        <label for="id_gender">Gender:</label>
+        <label for="id_gender">d. Gender:</label>
         {{ form.gender }}
 
-        <label for="id_home_address">Home Address:</label>
+        <label for="id_home_address">e. Home Address:</label>
         {{ form.home_address }}
 
-        <label for="id_phone_number">Phone Number:</label>
+        <label for="id_phone_number">f. Phone Number:</label>
         {{ form.phone_number }}
 
-        <label for="id_county">Home County:</label>
+        <label for="id_county">g. Home County:</label>
         {{ form.county }}
 
-        <label for="id_next_of_kin">Name of Next of Kin:</label>
+        <label for="id_next_of_kin">h. Name of Next of Kin:</label>
         {{ form.next_of_kin }}
 
-        <label for="id_next_of_kin_address">Next of Kin Address:</label>
+        <label for="id_next_of_kin_address">i. Next of Kin Address:</label>
         {{ form.next_of_kin_address }}
 
-        <label for="id_next_of_kin_phone">Next of Kin Phone:</label>
+        <label for="id_next_of_kin_phone">j. Next of Kin Phone:</label>
         {{ form.next_of_kin_phone }}
 
-        <label for="id_chief_name">Name of Chief:</label>
+        <label for="id_chief_name">k. Name of Chief:</label>
         {{ form.chief_name }}
 
-        <label for="id_chief_address">Chief Address:</label>
+        <label for="id_chief_address">l. Chief Address:</label>
         {{ form.chief_address }}
 
-        <label for="id_chief_phone">Chief Phone:</label>
+        <label for="id_chief_phone">m. Chief Phone:</label>
         {{ form.chief_phone }}
 
        <div class="checkbox-container">
 
-    <label for="id_disability">Are you living with a disability?</label>
+    <label for="id_disability">n. Are you living with a disability?</label>
            {{ form.disability }}
         </div>
 
-        <label for="id_disability_details">Specify:</label>
+        <label for="id_disability_details">o. Specify:</label>
         {{ form.disability_details }}
 
-        <label for="id_student_status">Student Status:</label>
+        <label for="id_student_status">p. Student Status:</label>
         {{ form.student_status }}
 
-        <label for="id_residential_status">Accommodation or Residential Status:</label>
+        <label for="id_residential_status">q. Accommodation or Residential Status:</label>
         {{ form.residential_status }}
 
 
@@ -99,7 +99,7 @@
         <h2>2. FAMILY BACKGROUND</h2>
 
     <!-- Parental Status -->
-    <label>Parental Status (Tick as appropriate)</label>
+    <label>a. Parental Status (Tick as appropriate)</label>
     {{ form.parental_status }}
 
     <div id="death_certificate_field" style="display: none;">
@@ -109,79 +109,105 @@
 
     <!-- Father Details -->
     <div id="father_fields">
-        <h3>Father</h3>
-        <label>Age:</label> {{ form.father_age }}
-        <label>Occupation:</label> {{ form.father_occupation }}
-        <label>Current Employer:</label> {{ form.father_employer }}
-        <label>Health Status (Attach evidence):</label> {{ form.father_health_status }}
+        <h3>b. Father</h3>
+        <label>i. Age:</label> {{ form.father_age }}
+        <label>ii. Occupation:</label> {{ form.father_occupation }}
+        <label>iii. Current Employer:</label> {{ form.father_employer }}
+        <label>iv. Health Status (Attach evidence):</label> {{ form.father_health_status }}
     </div>
 
          <!-- Mother Details -->
     <div id="mother_fields">
-        <h3>Mother</h3>
-        <label>Age:</label> {{ form.mother_age }}
-        <label>Occupation:</label> {{ form.mother_occupation }}
-        <label>Current Employer:</label> {{ form.mother_employer }}
-        <label>Health Status (Attach evidence):</label> {{ form.mother_health_status }}
+        <h3>c. Mother</h3>
+        <label>i. Age:</label> {{ form.mother_age }}
+        <label>ii. Occupation:</label> {{ form.mother_occupation }}
+        <label>iii. Current Employer:</label> {{ form.mother_employer }}
+        <label>iv. Health Status (Attach evidence):</label> {{ form.mother_health_status }}
     </div>
 
     <!-- Sibling Details -->
-    <h3>Siblings (Brothers and Sisters)</h3>
-    <label>Total number of siblings (Excluding yourself):</label> {{ form.total_siblings }}
-    <label>Number in University/College:</label> {{ form.university_siblings }}
-    <label>Number in Secondary:</label> {{ form.secondary_siblings }}
-    <label>How many are out of school?</label>
+    <h3>d. Siblings (Brothers and Sisters)</h3>
+    <label>i. Total number of siblings (Excluding yourself):</label> {{ form.total_siblings }}
+    <label>ii.Number in University/College:</label> {{ form.university_siblings }}
+    <label>iii.Number in Secondary:</label> {{ form.secondary_siblings }}
+    <label>iv.How many are out of school?</label>
     {{ form.out_of_school_siblings }}
-        <label>Why?</label>
+        <label>v.Why?</label>
         {{ form.out_of_school_reason }}
-    <label>Any who are working and their occupations:</label> {{ form.working_siblings_occupation }}
+    <label>vi.Any who are working and their occupations:</label> {{ form.working_siblings_occupation }}
+<hr>
+   <h3>3.OTHER INFORMATION</h3>
 
-   <h3>OTHER INFORMATION</h3>
-
-    <label>Who paid your secondary school fees?</label>
+    <label>a. Who paid your secondary school fees?</label>
     {{ form.school_fee_payer }}
     {{form.school_fee_evidence}}
 
-    <label>Are you / have you been on work study program?</label>
+    <label>b.Are you / have you been on work study program?</label>
     {{form.work_study}}
     {{form.work_study_evidence}}
 
-    <label> Do you receive any financial support from external sponsors such as HELB, NGOs, CDF</label>
+    <label> d.Do you receive any financial support from external sponsors such as HELB, NGOs, CDF</label>
     {{ form.external_support }}
 
-    <label>If Yes, select sponsor:</label>
+    <label>e.If Yes, select sponsor:</label>
     {{ form.sponsor_source }}
 
-    <label>Amount received:</label>
+    <label>f.Amount received:</label>
     {{ form.sponsor_amount }}
 
-    <label>Have you completed paying tuition fees?</label>
+    <label>g.Have you completed paying tuition fees?</label>
     {{ form.tuition_fee_paid }}
 
-    <label>If No, state balance:</label>
+    <label>h.If No, state balance:</label>
     {{ form.fee_balance }}
 
-    <label>Attach Current Fee Statement:</label>
+    <label>j.Attach Current Fee Statement:</label>
     {{ form.fee_statement }}
 
-    <label>Have you ever deferred your university studies?</label>
+    <label>k.Have you ever deferred your university studies?</label>
     {{ form.deferred_study }}
 
-    <label>If Yes, give reason:</label>
+    <label>l.If Yes, give reason:</label>
     {{ form.defer_reason }}
 
-    <label>Any additional information:</label>
+    <label>m.Any additional information:</label>
     {{ form.additional_info }}
 
-    <label>Attach evidence:</label>
+    <label>n.Attach evidence:</label>
     {{ form.additional_info_evidence }}
 
-    <button type="submit">Submit Application</button>
-    <a href="{% url 'application_success' %}">Submit application</a>
+
+
+        <h3>4. DECLARATION BY THE APPLICANT</h3>
+        <p><strong>Note:</strong> The Committee may verify this information without necessarily contacting you.</p>
+
+        <p>
+            I declare that the information given above is true to the best of my knowledge.
+        </p>
+
+        <!-- Checkbox for declaration -->
+        <label>I agree to the declaration statement <input type="checkbox" id="declarationCheckbox">
+
+        </label>
+
+        <br><br>
+
+    <button type="submit" id="submitBtn" disabled>Submit Application</button>
+
     </form>
 </div>
 
 <script>
+    //for step 4
+    const declarationCheckbox = document.getElementById("declarationCheckbox");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // Add event listener to enable/disable button
+    declarationCheckbox.addEventListener("change", function () {
+        submitBtn.disabled = !this.checked;
+    });
+
+    //disability checkbox
     document.addEventListener("DOMContentLoaded", function () {
     let disabilityCheckbox = document.getElementById("id_disability");
     let specifyField = document.getElementById("id_disability_details");

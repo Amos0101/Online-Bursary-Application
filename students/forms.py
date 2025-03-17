@@ -83,3 +83,5 @@ class StudentApplicationForm(forms.ModelForm):
             "chief_phone": forms.TextInput(attrs={"placeholder": "Enter chief's phone"}),
             "disability_details": forms.TextInput(attrs={"placeholder": "If yes, specify your disability"}),
         }
+
+        exclude = ['student', 'status']
