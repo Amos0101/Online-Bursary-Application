@@ -1,22 +1,46 @@
-from datetime import timezone
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
 
 class StudentApplication(models.Model):
-    GENDER_CHOICES = [('M', 'Male'), ('F', 'Female')]
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female')
+    ]
+
     STUDENT_STATUS_CHOICES = [
         ('KUCCPS', 'Government Sponsored (KUCCPS)'),
         ('PSSP', 'Self Sponsored (PSSP)')
     ]
-    RESIDENTIAL_STATUS_CHOICES = [('Resident', 'Resident'), ('Non Resident', 'Non Resident')]
+    RESIDENTIAL_STATUS_CHOICES = [
+        ('Resident', 'Resident'),
+        ('Non Resident', 'Non Resident')
+    ]
 
     COUNTY_CHOICES = [
         ('Nairobi', 'Nairobi'),
         ('Mombasa', 'Mombasa'),
         ('Kisumu', 'Kisumu'),
+        ('Kitui', 'Kitui'),
+        ('Kericho', 'Kericho'),
+        ('Nakuru', 'Nakuru'),
+        ('Kakamega', 'Kakamega'),
+        ('Machakos', 'Machakos'),
+        ('Makueni', 'Makueni'),
+        ('Nandi', 'Nandi'),
+        ('Bomet', 'Bomet'),
+        ('Narok', 'Narok'),
+        ('Bungoma', 'Bungoma'),
+    ]
+
+    SCHOOL_CHOICES=[
+        ('SCI', 'SCI'),
+        ('SEDU', 'SEDU'),
+        ('SDHMA', 'SDHMA'),
+        ('SOM', 'SOM'),
+        ('SEBE', 'SEBE'),
+        ('SASS', 'SASS'),
     ]
 
     STATUS_CHOICES = [
@@ -25,10 +49,21 @@ class StudentApplication(models.Model):
         ('Rejected', 'Rejected'),
     ]
 
+    parental_status = models.CharField(max_length=10, choices=[
+        ("both", "Have both parents"),
+        ("one", "Have one parent"),
+        ("orphan", "Total orphan"),
+    ])
+
+    EMPLOYER_CHOICES=[
+        ('Employed', 'Employed'),
+        ('Not employed','Not employed')
+    ]
+
     # Personal Details
     name = models.CharField(max_length=100)
     reg_no = models.CharField(max_length=50, unique=True)
-    school = models.CharField(max_length=100)
+    school = models.CharField(max_length=100,choices=SCHOOL_CHOICES)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     home_address = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15)
@@ -45,24 +80,20 @@ class StudentApplication(models.Model):
     residential_status = models.CharField(max_length=15, choices=RESIDENTIAL_STATUS_CHOICES)
 
     # Family Background
-    parental_status = models.CharField(max_length=10, choices=[
-        ("both", "Have both parents"),
-        ("one", "Have one parent"),
-        ("orphan", "Total orphan"),
-    ])
+
 
     death_certificate = models.FileField(upload_to="documents/", null=True, blank=True)
 
     # Father's Details
     father_age = models.IntegerField(null=True, blank=True)
     father_occupation = models.CharField(max_length=100, null=True, blank=True)
-    father_employer = models.CharField(max_length=100, null=True, blank=True)
+    father_employer = models.CharField(max_length=100, choices=EMPLOYER_CHOICES)
     father_health_status = models.FileField(upload_to="documents/", null=True, blank=True)
 
     # Mother's Details
     mother_age = models.IntegerField(null=True, blank=True)
     mother_occupation = models.CharField(max_length=100, null=True, blank=True)
-    mother_employer = models.CharField(max_length=100, null=True, blank=True)
+    mother_employer = models.CharField(max_length=100, choices=EMPLOYER_CHOICES)
     mother_health_status = models.FileField(upload_to="documents/", null=True, blank=True)
 
     # Sibling Details
@@ -74,7 +105,11 @@ class StudentApplication(models.Model):
     working_siblings_occupation = models.TextField(null=True, blank=True)
 
     # Other Information Fields
-    school_fee_payer = models.CharField(max_length=255, blank=False, null=False)
+    SCHOO_FEES_CHOICES=[
+        ('Parent','Parent'),
+        ('External Sponsor','External Sponsor')
+    ]
+    school_fee_payer = models.CharField(max_length=255, choices=SCHOO_FEES_CHOICES)
     school_fee_evidence = models.FileField(upload_to="documents/", null=True, blank=True)
 
     work_study = models.CharField(max_length=3, choices=[("yes", "Yes"), ("no", "No")])
@@ -92,7 +127,7 @@ class StudentApplication(models.Model):
     sponsor_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     tuition_fee_paid = models.CharField(max_length=3, choices=[("yes", "Yes"), ("no", "No")])
-    fee_balance = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    fee_balance = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,default=0.0)
     fee_statement = models.FileField(upload_to="documents/", null=True, blank=True)
 
     deferred_study = models.CharField(max_length=3, choices=[("yes", "Yes"), ("no", "No")])
@@ -108,15 +143,21 @@ class StudentApplication(models.Model):
     additional_info = models.TextField(null=True, blank=True)
     additional_info_evidence = models.FileField(upload_to="documents/", null=True, blank=True)
 
+
     student = models.ForeignKey(User, on_delete=models.CASCADE)  # Reference to the student
+
+    academic_year = models.CharField(max_length=9,default='2024/2025')  # Store the academic year
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     submitted_at = models.DateTimeField(auto_now_add=True)  # Timestamp of submission
     reviewed_at = models.DateTimeField(null=True, blank=True)  # Timestamp when reviewed
     approved_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
+    class Meta:
+        unique_together = ('student', 'academic_year')  # Ensure one application per student per year
 
     def __str__(self):
-        return f"{self.name} ({self.reg_no})"
+        return f"{self.reg_no} - {self.academic_year} - {self.status}"
+
 
 
 class Notification(models.Model):

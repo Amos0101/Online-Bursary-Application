@@ -9,6 +9,7 @@ class StudentApplicationForm(forms.ModelForm):
     ]
 
     # Existing Fields
+    school = forms.ChoiceField(choices=StudentApplication.SCHOOL_CHOICES, required=True)
     county = forms.ChoiceField(choices=StudentApplication.COUNTY_CHOICES, required=True)
     parental_status = forms.ChoiceField(
         choices=PARENTAL_STATUS_CHOICES,
@@ -19,12 +20,12 @@ class StudentApplicationForm(forms.ModelForm):
 
     father_age = forms.IntegerField(widget=forms.NumberInput(attrs={"min": 0}), required=False)
     father_occupation = forms.CharField(max_length=100, required=False)
-    father_employer = forms.CharField(max_length=100, required=False)
+    father_employer = forms.ChoiceField(choices=StudentApplication.EMPLOYER_CHOICES, required=False)
     father_health_status = forms.FileField(required=False)
 
     mother_age = forms.IntegerField(widget=forms.NumberInput(attrs={"min": 0}), required=False)
     mother_occupation = forms.CharField(max_length=100, required=False)
-    mother_employer = forms.CharField(max_length=100, required=False)
+    mother_employer = forms.ChoiceField(choices=StudentApplication.EMPLOYER_CHOICES, required=False)
     mother_health_status = forms.FileField(required=False)
 
     total_siblings = forms.IntegerField(widget=forms.NumberInput(attrs={"min": 0}), required=True)
@@ -42,7 +43,7 @@ class StudentApplicationForm(forms.ModelForm):
                             ("Academic", "Academic")]
 
     # Step 3 Fields
-    school_fee_payer = forms.CharField(max_length=255, required=False)
+    school_fee_payer = forms.ChoiceField(choices=StudentApplication.SCHOO_FEES_CHOICES, required=False)
     school_fee_evidence = forms.FileField(required= False)
 
     work_study = forms.ChoiceField(choices=YES_NO_CHOICES, widget= forms.RadioSelect)
@@ -84,4 +85,4 @@ class StudentApplicationForm(forms.ModelForm):
             "disability_details": forms.TextInput(attrs={"placeholder": "If yes, specify your disability"}),
         }
 
-        exclude = ['student', 'status']
+        exclude = ['student', 'status','academic_year']

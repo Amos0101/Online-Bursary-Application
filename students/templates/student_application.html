@@ -40,11 +40,9 @@
     <form method="POST" id="personalDetailsForm" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label for="id_name">a. Name:</label>
-        {{ form.name }}
+        <label for="id_name">a. Name:</label> {{ form.name }}
 
-        <label for="id_reg_no">b. Registration Number:</label>
-        {{ form.reg_no }}
+        <label for="id_reg_no">b. Registration Number:</label> {{ form.reg_no }}
 
         <label for="id_school">c. School:</label>
         {{ form.school }}

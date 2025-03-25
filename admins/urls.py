@@ -13,4 +13,10 @@ urlpatterns = [
     path('approved-applications/', views.approved_applications, name='approved_applications'),
     path('rejected-applications/', views.rejected_applications, name='rejected_applications'),
 
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+
+    path('allocate_funds/', views.allocate_funds, name="allocate_funds"),
+
+    path("export/pdf/", views.export_fund_allocation_pdf, name="export_fund_allocation_pdf"),
+
 ]

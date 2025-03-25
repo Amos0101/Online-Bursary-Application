@@ -1,10 +1,13 @@
 from django.contrib import messages
+from django.utils.timezone import now
+
 from .forms import StudentApplicationForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Notification
+from admins.models import ApplicationSettings
 
 
 def student_dashboard(request):
@@ -16,10 +19,21 @@ def homepage(request):
 
 
 def student_application(request):
+    settings = ApplicationSettings.objects.last()  # Get the latest settings
+
+    # Check if applications are open
+    if not settings or not settings.is_open:
+        return render(request, 'application_closed.html')  # Show "Applications are Closed" page
+
+    # Check if the deadline has passed
+    if settings.deadline and now().date() > settings.deadline:
+        return render(request, 'application_closed.html', {'message': "The application deadline has passed."})
+
     if request.method == "POST":
         form = StudentApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             application = form.save(commit=False)
+            application.academic_year = settings.academic_year  # Use current academic year
             application.student = request.user
             application.status = "Pending"
             application.save()
